@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+  namespace: order-processing
+  labels:
+    app: order-service
+spec:
+  # Use 1 replica when nodes are at pod limit (e.g. t3.micro); HPA will scale 1–10. Set to 2 when you have more node capacity.
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      containers:
+        - name: order-service
+          # ECR image: create repo with aws ecr create-repository --repository-name order-service --region us-east-2
+          image: 557260578041.dkr.ecr.us-east-2.amazonaws.com/order-service:v1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+          envFrom:
+            - configMapRef:
+                name: order-service-config
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 2
+      # Optional: use imagePullSecrets if your ECR is private and not using IAM for nodes
+      # imagePullSecrets:
+      #   - name: ecr-registry

@@ -1,0 +1,60 @@
+# Sentinel monitoring agent (Phase 4). Use a NEW tag each time you update the card/agent so the cluster pulls the new image.
+# Build: docker build --platform linux/amd64 -t 557260578041.dkr.ecr.us-east-2.amazonaws.com/sentinel:v1.0.4 ./sentinel && docker push 557260578041.dkr.ecr.us-east-2.amazonaws.com/sentinel:v1.0.4
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sentinel
+  namespace: order-processing
+  labels:
+    app: sentinel
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentinel
+  template:
+    metadata:
+      labels:
+        app: sentinel
+    spec:
+      serviceAccountName: sentinel
+      containers:
+        - name: sentinel
+          image: 557260578041.dkr.ecr.us-east-2.amazonaws.com/sentinel:v1.0.4
+          imagePullPolicy: Always
+          env:
+            - name: K8S_NAMESPACE
+              value: "order-processing"
+            - name: CLUSTER_NAME
+              value: "smart-scaling-guardian"
+            # Stop scaling-event spam by default (you can add ScalingReplicaSet back if you want).
+            - name: ALERT_REASONS
+              value: "OOMKilling,BackOff,Failed,Unhealthy,Killing"
+            - name: GEMINI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: order-service-secrets
+                  key: GEMINI_API_KEY
+            - name: SLACK_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: order-service-secrets
+                  key: SLACK_WEBHOOK_URL
+            - name: GEMINI_MODEL
+              value: "gemini-1.5-flash"
+            - name: GEMINI_TIMEOUT_SECONDS
+              value: "15"
+            - name: GRAFANA_DASHBOARD_URL
+              value: "http://grafana/placeholder"
+            - name: DEDUP_CACHE_TTL_SECONDS
+              value: "300"
+            - name: LOG_LEVEL
+              value: "INFO"
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "100m"
+              memory: "128Mi"
+      restartPolicy: Always

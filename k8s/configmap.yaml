@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: order-service-config
+  namespace: order-processing
+  labels:
+    app: order-service
+data:
+  LOG_LEVEL: "INFO"
+  # Higher value = more CPU per request so HPA can hit 50% target (use 500000 for load tests)
+  CPU_INTENSITY: "500000"
+  SIMULATED_LATENCY_MS: "0"
+  MAX_CONCURRENT_REQUESTS: "100"
+  PORT: "8080"

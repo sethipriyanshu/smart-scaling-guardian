@@ -1,0 +1,26 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!terraform.tfvars.example
+.terraform.lock.hcl
+
+# Secrets and env
+.env
+.env.*
+k8s/secret.yaml
+
+# IDE and OS
+.idea/
+.vscode/
+.DS_Store
+
+# Go
+app/*.exe
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/

@@ -1,0 +1,38 @@
+# ServiceAccount, Role, and RoleBinding for the Sentinel agent (read-only access).
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sentinel
+  namespace: order-processing
+  labels:
+    app: sentinel
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: sentinel-reader
+  namespace: order-processing
+rules:
+  - apiGroups: [""]
+    resources: ["events", "pods", "pods/log"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["autoscaling"]
+    resources: ["horizontalpodautoscalers"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: sentinel-reader
+  namespace: order-processing
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: sentinel-reader
+subjects:
+  - kind: ServiceAccount
+    name: sentinel
+    namespace: order-processing
