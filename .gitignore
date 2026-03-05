@@ -5,6 +5,8 @@
 *.tfvars
 !terraform.tfvars.example
 .terraform.lock.hcl
+**/.terraform/
+**/.terraform.lock.hcl
 
 # Secrets and env
 .env
