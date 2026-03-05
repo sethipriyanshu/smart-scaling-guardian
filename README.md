@@ -1,6 +1,6 @@
 # Smart-Scaling Guardian
 
-> An AI-powered Kubernetes autoscaling monitor built on AWS EKS — provisioned with Terraform, watched by a custom Python Sentinel agent, and alerting on-call engineers via Gemini-generated Slack notifications.
+An AI-powered Kubernetes autoscaling monitor built on AWS EKS — provisioned with Terraform, watched by a custom Python Sentinel agent, and alerting on-call engineers via Gemini-generated Slack notifications.
 
 ---
 
@@ -39,20 +39,9 @@ Smart-Scaling Guardian is a production-grade DevOps project that demonstrates:
 
 ### Slack alert
 
-> _Add a screenshot of the Slack alert card here._
-> _Tip: paste a screenshot of the Slack card with the "In plain language", "Technical details", and action buttons visible._
-
 <!-- Replace the line below with your image -->
 ![Slack Alert Card](docs/slack-alert-screenshot.png)
 
-### Live terminal output
-
-> _Add a screenshot or GIF of the terminal running the demo here._
-
-<!-- Replace the line below with your image -->
-![Terminal Demo](docs/terminal-demo.png)
-
----
 
 ## Features
 
